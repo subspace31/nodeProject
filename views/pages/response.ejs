@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+<% include ../partials/nav.ejs %>
+
+<div class="container">
+    <h2>Shipping Calculator</h2>
+    <form class="form-inline" method="post" action="/calculate">
+        <div class="form-group">
+            <label>
+                <input class="form-control" name="weight" type="number" step="any" placeholder="weight">
+            </label>
+            <label for="type">
+                <select name="type" id="type" class="form-control">
+                    <option value="stamp">Letters (Stamped)</option>
+                    <option value="meter">Letters (Metered)</option>
+                    <option value="flat">Large Envelopes (Flats)</option>
+                    <option value="parcel">Parcel</option>
+                </select>
+            </label>
+            <button class="btn-primary btn" type="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
