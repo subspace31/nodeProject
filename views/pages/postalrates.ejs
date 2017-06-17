@@ -9,14 +9,23 @@
 <% include ../partials/nav.ejs %>
 
 <div class="container">
-<h2>Database Results</h2>
-
-<ul>
-    <% results.forEach(function(r) { %>
-        <li><%= r.id %> - <%= r.name %></li>
-    <% }); %>
-</ul>
-
+    <h2>Shipping Calculator</h2>
+    <form class="form-inline" method="post" action="/calculate">
+        <div class="form-group">
+            <label>
+                <input class="form-control" name="weight" type="number" step="any" placeholder="weight">
+            </label>
+            <label for="type">
+                <select name="type" id="type" class="form-control">
+                    <option value="Letters (Stamped)">Letters (Stamped)</option>
+                    <option value="Letters (Metered)">Letters (Metered)</option>
+                    <option value="Large Envelopes (Flats)">Large Envelopes (Flats)</option>
+                    <option value="Parcel">Parcel</option>
+                </select>
+            </label>
+            <button class="btn-primary btn" type="submit">Submit</button>
+        </div>
+    </form>
 </div>
 
 </body>
