@@ -1,7 +1,14 @@
 var cool = require('cool-ascii-faces')
+var fs = require('fs')
+
 var express = require('express')
 var app = express()
+
 var body = require('body-parser')
+
+var connectionString = process.env.DATABASE_URL || 'postgres://postgres:reddragon@localhost/postgres'
+const { Pool } = require('pg')
+const pool = new Pool( {connectionString} )
 
 app.set('port', (process.env.PORT || 5000))
 
@@ -16,7 +23,17 @@ app.set('views', __dirname + '/views')
 app.set('view engine', 'ejs')
 
 app.get('/', function(request, response) {
-    response.render('pages/index')
+    var cat = []
+    pool.query('SELECT * FROM categories ORDER BY category', (err, res) => {
+          if (err) throw err
+          else {
+              console.log(res.rows[1].category)
+              console.log(res.rowCount)
+              for (let i = 0; i < res.rowCount; i++)
+                  cat.push(res.rows[i].category)
+              response.render('pages/index', {cat})
+          }
+    })
 })
 
 app.get('/cool', function(req, res) {
@@ -25,6 +42,10 @@ app.get('/cool', function(req, res) {
 
 app.get('/shipping', function(req, res) {
     res.render('pages/postalrates')
+})
+
+app.get('/login', function(req, res) {
+    res.render('pages/login')
 })
 
 app.post('/calculate', function(req, res) {
