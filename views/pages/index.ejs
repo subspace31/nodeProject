@@ -1,55 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <% var title = 'Title';%>
     <% include ../partials/header.ejs %>
 </head>
 
 <body>
+<% var pageCount = 1; var currentPage = 2%>
 
 <% include ../partials/nav.ejs %>
 
-<div class="container">
-    <div class="card p-5">
+<div class="container-fluid">
+    <div class="">
         <h1>Add a Listing</h1>
         <div class="row">
-            <div class="col-md-4">
-                <form>
-                    <div class="btn btn-primary btn-sm disabled">
-                        <span>Choose file</span>
-                        <input type="file" class="disabled">
+            <div class="col-md-3 col-md-offset-1">
+                <h3>Image:</h3>Saved files:
+                <div class="well">
+                    <div class="imgGallery">
                     </div>
-                    <div class="file-path-wrapper">
-                        <input class="file-path validate disabled" id="file-path" type="text" placeholder="Upload your file">
-                        <label for="file-path" class="disabled"></label>
-                    </div>
+                    <br>
+                    <% if (pageCount > 1) { %>
+                    <ul class="pagination">
+                        <% if (currentPage > 1) { %>
+                        <li><a href="/?page=1">&laquo;</a></li>
+                        <% } %>
+                        <% var i = 1;
+                            if (currentPage > 5) {
+                                i = +currentPage - 4;
+                            } %>
+                        <% if (i !== 1) { %>
+                        <li class="disabled"><a href="#">...</a></li>
+                        <% } %>
+                        <% for (i; i<=pageCount; i++) { %>
+                        <% if (currentPage == i) { %>
+                        <li class="active"><span><%= i %> <span class="sr-only">(current)</span></span></li>
+                        <% } else { %>
+                        <li><a href="/?page=<%= i %>"><%= i %></a></li>
+                        <% } %>
+                        <% if (i == (+currentPage + 4)) { %>
+                        <li class="disabled"><a href="#">...</a></li>
+                        <% break; } %>
+                        <% } %>
+                        <% if (currentPage != pageCount) { %>
+                        <li><a href="/?page=<%= pageCount %>">&raquo;</a></li>
+                        <% } %>
+                    </ul>
+                    <% } %>
+                </div>
+
+                <form action="/uploadFile">
+                    <input type="file">
+                    <!--<div class="">
+                        <input class="file-path form-control" id="file-path" type="text" placeholder="Upload your file">
+                        <label for="file-path" class=""></label>
+                    </div>-->
                 </form>
             </div>
-            <div class="col-md-8">
-                <form class="text-center" action="insertItem.php" id="insertItemForm" method="post" enctype="multipart/form-data">
+            <div class="col-md-6 container-fluid">
+                <form class="text-center" action="/addItem" id="insertItemForm" method="post" enctype="multipart/form-data">
                     <div>
                         <div class="text-left">
-                            <div class="md-form">
-                                <input type="text" id="name" name="name" class="form-control validate">
-                                <label for="name">Name</label>
+                            <div>
+                                <input type="hidden" id="id" name="id" value="<%= id %>">
                             </div>
                             <div class="md-form">
-                                <input type="number" id="cost" name="cost" class="form-control">
-                                <label for="cost">Cost</label>
+                                <input type="text" id="name" name="name" class="form-control" placeholder="Name">
+                                <label for="name"></label>
                             </div>
                             <div class="md-form">
-                                <textarea type="text" id="desc" name="desc" class="md-textarea"></textarea>
+                                <input type="number" id="cost" name="cost" class="form-control" placeholder="Cost">
+                                <label for="cost"></label>
+                            </div>
+                            <div class="md-form">
                                 <label for="desc">Description</label>
+                                <textarea id="desc" name="desc"></textarea>
                             </div>
-                            <label for="cat">Category</label>
-                            <div class="container d-inline-flex">
+
+                            <div>
+                                <label for="cat">Category</label>
                                 <select id="cat" name="cat" class="pull-left">
+                                    <option disabled selected>Pick a Category</option>
                                     <% cat.forEach(function(category) { %>
                                     <%- include('../partials/selectOption.ejs', {category}) %>
                                     <% })%>
                                 </select>
                             </div>
-                            <button type="button" onclick="addItem('name', 'cost', 'desc', 'cat')" class="btn pink lighten-4">Save Listing</button>
+                            <div class="container row">
+
+                            </div>
+
+                            <br>
+                            <button type="button" onclick="addItem()" class="btn">Save Listing</button>
                         </div>
                     </div>
                 </form>
@@ -59,6 +100,5 @@
 </div>
 
 </body>
-
-
+<script src="../js/main.js"></script>
 </html>

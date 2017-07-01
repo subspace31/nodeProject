@@ -2,7 +2,7 @@ var cool = require('cool-ascii-faces')
 var fs = require('fs')
 
 var express = require('express')
-var app = express()
+
 
 var body = require('body-parser')
 
@@ -10,55 +10,86 @@ var connectionString = process.env.DATABASE_URL || 'postgres://postgres:reddrago
 const { Pool } = require('pg')
 const pool = new Pool( {connectionString} )
 
-app.set('port', (process.env.PORT || 5000))
 
-app.use(express.static(__dirname + '/public'))
-app.use(body.json())
-app.use(body.urlencoded({
-    extended: true
-}))
+module.exports.createUserSession = function(req, res, user) {
+    var theUser = {
+        id: user.id
+    }
 
-// views is directory for all template files
-app.set('views', __dirname + '/views')
-app.set('view engine', 'ejs')
+    req.session.user = theUser
+    req.user = theUser
+    res.locals.user = theUser
+}
 
-app.get('/', function(request, response) {
-    var cat = []
-    pool.query('SELECT * FROM categories ORDER BY category', (err, res) => {
-          if (err) throw err
-          else {
-              console.log(res.rows[1].category)
-              console.log(res.rowCount)
-              for (let i = 0; i < res.rowCount; i++)
-                  cat.push(res.rows[i].category)
-              response.render('pages/index', {cat})
-          }
+module.exports.createApp = function() {
+    var app = express()
+    app.set('port', (process.env.PORT || 5000))
+
+    app.use(express.static(__dirname + '/public'))
+    app.use(body.json())
+    app.use(body.urlencoded({ extended: true }))
+
+    // views is directory for all template files
+    app.set('views', __dirname + '/views')
+    app.set('view engine', 'ejs')
+
+    app.use(session({
+        cookieName: 'session',
+        secret: 'the game',
+        duration: 30 * 60 * 1000,
+        activeDuration: 5 * 60 * 1000,
+    }))
+
+    //routes
+
+
+    app.get('/', function(request, response) {
+
+        var cat = []
+        pool.query('SELECT * FROM categories ORDER BY category', (err, res) => {
+            if (err) throw err
+            else {
+                console.log(res.rows[1].category)
+                console.log(res.rowCount)
+                for (let i = 0; i < res.rowCount; i++)
+                    cat.push(res.rows[i].category)
+                response.render('pages/index', {cat})
+            }
+        })
+
+        /*pool.query('SELECT * FROM images WHERE user_id = $id', (err, res) => {
+         if (err) throw err
+         else {
+
+         }
+         })*/
     })
-})
 
-app.get('/cool', function(req, res) {
-    res.send(cool())
-})
+    app.get('/cool', function(req, res) {
+        res.send(cool())
+    })
 
-app.get('/shipping', function(req, res) {
-    res.render('pages/postalrates')
-})
+    app.get('/shipping', function(req, res) {
+        res.render('pages/postalrates')
+    })
 
-app.get('/login', function(req, res) {
-    res.render('pages/login')
-})
+    app.get('/login', function(req, res) {
+        res.render('pages/login')
+    })
 
-app.post('/calculate', function(req, res) {
-    var weight = +req.body.weight
-    var type = req.body.type
+    app.get('/upload', function(req, res) {
+        var temp_path = req.files.upload.path;
+    })
 
-    console.log(calcShipping(weight, type).toFixed(2))
-    res.render('pages/response', { cost:calcShipping(weight, type).toFixed(2), weight, type })
-})
+    app.post('/calculate', function(req, res) {
+        var weight = +req.body.weight
+        var type = req.body.type
 
-app.listen(app.get('port'), function() {
-    console.log('Node app is running on port', app.get('port'))
-})
+        console.log(calcShipping(weight, type).toFixed(2))
+        res.render('pages/response', { cost:calcShipping(weight, type).toFixed(2), weight, type })
+    })
+
+}
 
 function calcShipping(weight, type) {
     var answer = 0;
