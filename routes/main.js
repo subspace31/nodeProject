@@ -79,7 +79,7 @@ router.post('/upload', function(req, res) {
 
     form.multiples = true
 
-    form.uploadDir = path.join(__dirname, '..', '/public/img', req.session.user.id)
+    form.uploadDir = path.join(__dirname, '..', '/public/img', '' + req.session.user.id)
 
     if (!fs.existsSync(form.uploadDir)) {
         fs.mkdirSync(form.uploadDir)
