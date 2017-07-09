@@ -40,8 +40,8 @@ module.exports.createApp = function() {
 
 
     //routes
-    app.use(require('./routes/main'))
-    app.use(require('./routes/auth'))
+    app.use(require(__dirname + '/routes/main'))
+    app.use(require(__dirname + '/routes/auth'))
 
     return app;
 }
