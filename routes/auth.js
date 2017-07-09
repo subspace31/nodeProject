@@ -30,9 +30,6 @@ router.post('/register', function(req, res) {
             password: hash
         }
     }).spread((user, created) => {
-        console.log(user.get({
-            plain:true
-        }))
         utils.createUserSession(req, res, created)
         res.redirect('/')
     })

@@ -5,8 +5,6 @@ var session = require('client-sessions')
 
 var middleware = require('./middleware')
 
-
-
 module.exports.createUserSession = function(req, res, user) {
     var theUser = {
         id: user.id,

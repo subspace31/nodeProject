@@ -6,7 +6,6 @@
 
 <body>
 <% var pageCount = 1; var currentPage = 2%>
-
 <% include ../partials/nav.ejs %>
 
 <div class="container-fluid">
@@ -14,8 +13,8 @@
         <h1>Add a Listing</h1>
         <div class="row">
             <div class="col-md-3 col-md-offset-1">
-                <h3>Image:</h3>Saved files:
-                <div class="well">
+                <h3>Image:</h3>Saved:
+                <div class="well" id="imageWell">
                     <div class="imgGallery">
                     </div>
                     <br>
@@ -48,28 +47,42 @@
                     <% } %>
                 </div>
 
-                <form action="/uploadFile">
-                    <input type="file">
-                    <!--<div class="">
-                        <input class="file-path form-control" id="file-path" type="text" placeholder="Upload your file">
-                        <label for="file-path" class=""></label>
+                <form>
+                    <!--<div class="input-group">
+                        <label class="input-group-btn">
+                            <span class="btn btn-primary">Browse&hellip; <input type="file" style="display: none" multiple></span>
+                        </label>
+                        <input type="text" class="form-control" id="imgUpload" readonly>
+                        <div class="input-group-btn">
+                            <button class="btn btn-primary" onclick="upload()">Submit</button>
+                        </div>
                     </div>-->
+                    <div id="fileuploader">Upload</div>
                 </form>
+                <div>
+                    <h5>Preview</h5>
+                    <img src="">
+                </div>
             </div>
             <div class="col-md-6 container-fluid">
                 <form class="text-center" action="/addItem" id="insertItemForm" method="post" enctype="multipart/form-data">
                     <div>
                         <div class="text-left">
                             <div>
+                                <label for="desc">Image</label><br>
+                                <img class="well item-image">
+                            </div>
+                            <div>
                                 <input type="hidden" id="id" name="id" value="<%= id %>">
+                                <input type="hidden" id="imageName" name="imageName" value="">
                             </div>
                             <div class="md-form">
+                                <label for="name">Name</label>
                                 <input type="text" id="name" name="name" class="form-control" placeholder="Name">
-                                <label for="name"></label>
                             </div>
                             <div class="md-form">
+                                <label for="cost">Cost</label>
                                 <input type="number" id="cost" name="cost" class="form-control" placeholder="Cost">
-                                <label for="cost"></label>
                             </div>
                             <div class="md-form">
                                 <label for="desc">Description</label>
@@ -97,6 +110,12 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="modal" id="imgModal">
+    <span class="close" onclick="hideModal()">×</span>
+    <img class="modal-content" id="imgModal-content">
+    <div id="caption"></div>
 </div>
 
 </body>
