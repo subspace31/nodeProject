@@ -25,6 +25,7 @@ router.get('/', function(req, res) {
     } else {
         res.redirect('/login')
     }
+
     data.title = 'Add Listing'
 
     let cat = []
@@ -33,6 +34,7 @@ router.get('/', function(req, res) {
             cat.push(category.dataValues.category + '')
         })
         data.cat = cat
+
         res.render('pages/index', data)
     })
 })
