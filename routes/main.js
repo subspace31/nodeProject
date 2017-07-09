@@ -78,7 +78,12 @@ router.post('/upload', function(req, res) {
     let form = new formidable.IncomingForm()
 
     form.multiples = true
-    form.uploadDir = path.join(__dirname, '..', '/public/img', '/15')
+
+    form.uploadDir = path.join(__dirname, '..', '/public/img', req.session.user.id)
+
+    if (!fs.existsSync(form.uploadDir)) {
+        fs.mkdirSync(form.uploadDir)
+    }
 
     form.on('file', function(field, file) {
         fs.rename(file.path, path.join(form.uploadDir, file.name))
