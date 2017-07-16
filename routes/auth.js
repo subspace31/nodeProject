@@ -9,13 +9,16 @@ let router = express.Router()
 let loggedIn = false
 let data = {
     title: '',
-    logAction: ((loggedIn) ? 'logout':'Log Out'),
-    logText: ((loggedIn) ? 'login':'Login'),
+    id: 0,
+    logAction: ((loggedIn) ? 'login':'logout'),
+    logText: ((loggedIn) ? 'Login':'Log Out'),
 }
 
 router.get('/register', function(req, res) {
-    if (req.session && req.session.user)
-        loggedIn = true
+    loggedIn = (req.session && req.session.user)
+    if (loggedIn)
+        res.redirect('/')
+
     data.title = 'Register'
     res.render('pages/register.ejs', data)
 })
@@ -37,8 +40,10 @@ router.post('/register', function(req, res) {
 
 
 router.get('/login', function(req, res) {
-    if (req.session && req.session.user)
-        loggedIn = true
+    loggedIn = (req.session && req.session.user)
+    if (loggedIn)
+        res.redirect('/')
+
     data.title = 'Login'
     res.render('pages/login.ejs', data)
 })
@@ -61,6 +66,7 @@ router.post('/login', function(req, res) {
 router.get('/logout', function(req, res) {
     if (req.session) {
         req.session.reset()
+        loggedIn = false
     }
     res.redirect('/login')
 })

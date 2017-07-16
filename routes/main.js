@@ -44,6 +44,12 @@ router.get('/cool', function(req, res) {
 })
 
 router.post('/getImages', function(req, res) {
+    if (req.session && req.session.user){
+        loggedIn = true
+        data.id = req.session.user.id
+    } else {
+        res.redirect('/login')
+    }
 
     if (req.session && req.session.user) {
         let images = []
@@ -72,7 +78,43 @@ router.post('/getImages', function(req, res) {
     }
 })
 
+router.post('/delete', function(req, res) {
+    if (req.session && req.session.user){
+        loggedIn = true
+        data.id = req.session.user.id
+    } else {
+        res.redirect('/login')
+    }
+    console.log('delete called')
+
+    let imgPath = path.join(__dirname, '..', '/public/img', '' + req.session.user.id, req.body.img)
+    console.log('deleting file @: ' + imgPath)
+    fs.unlink(imgPath, (err) => {
+        if (err) throw err;
+        console.log('succesfully deleted ' + imgPath)
+        models.Image.findOne({
+            where: {
+                seller_id: req.session.user.id,
+                name: req.body.img
+            }
+        }).then(task => {
+            task.destroy()
+        }).then(() => {
+            res.end('success')
+        })
+    })
+
+})
+
+
 router.post('/upload', function(req, res) {
+    if (req.session && req.session.user){
+        loggedIn = true
+        data.id = req.session.user.id
+    } else {
+        res.redirect('/login')
+    }
+
     console.log('upload called')
 
     let form = new formidable.IncomingForm()

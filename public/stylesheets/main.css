@@ -65,8 +65,21 @@ textarea {
     margin-bottom: 5px;
 }
 
-.imgSelect i {
+.imgSelect i.glyphicon-trash {
+    background-color: floralwhite;
+    border: 1px solid darkgrey;
+    border-radius: 5px;
+    padding: 5px;
     color: darkred;
+    cursor: pointer;
+}
+
+.imgSelect i.glyphicon-zoom-in {
+    background-color: floralwhite;
+    border: 1px solid darkgrey;
+    border-radius: 5px;
+    padding: 5px;
+    color: blue;
     cursor: pointer;
 }
 
@@ -129,6 +142,7 @@ textarea {
     font-size: 40px;
     font-weight: bold;
     transition: 0.3s;
+    font-size: 3em;
 }
 
 .close:hover,
