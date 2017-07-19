@@ -79,19 +79,13 @@ router.post('/getImages', function(req, res) {
 })
 
 router.post('/delete', function(req, res) {
-    if (req.session && req.session.user){
-        loggedIn = true
-        data.id = req.session.user.id
-    } else {
-        res.redirect('/login')
-    }
     console.log('delete called')
 
     let imgPath = path.join(__dirname, '..', '/public/img', '' + req.session.user.id, req.body.img)
     console.log('deleting file @: ' + imgPath)
-    fs.unlink(imgPath, (err) => {
-        if (err) throw err;
-        console.log('succesfully deleted ' + imgPath)
+    // fs.unlink(imgPath, (err) => {
+    //     if (err) throw err;
+    //     console.log('succesfully deleted ' + imgPath)
         models.Image.findOne({
             where: {
                 seller_id: req.session.user.id,
@@ -102,19 +96,20 @@ router.post('/delete', function(req, res) {
         }).then(() => {
             res.end('success')
         })
-    })
+    // })
 
 })
 
+router.post('/rename', function(req, res) {
+    models.Image.update(
+        { name: req.body.name },
+        { where: { id : req.id } })
+    let imgPath = path.join(__dirname, '..', '/public/img', '' + req.session.user.id)
+    fs.rename(path.join(imgPath, req.body.oldname), path.join(imgPath, req.body.name)
+    )
+})
 
 router.post('/upload', function(req, res) {
-    if (req.session && req.session.user){
-        loggedIn = true
-        data.id = req.session.user.id
-    } else {
-        res.redirect('/login')
-    }
-
     console.log('upload called')
 
     let form = new formidable.IncomingForm()
